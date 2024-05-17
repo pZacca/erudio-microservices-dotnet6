@@ -8,5 +8,23 @@ namespace GeekShopping.CouponAPI.Model.Context
 
         public DbSet<Coupon> Coupons { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Coupon>().HasData(new Coupon
+            {
+                Id = 1,
+                CouponCode = "ZACCA10",
+                DiscountAmount = 10
+            });
+            modelBuilder.Entity<Coupon>().HasData(new Coupon
+            {
+                Id = 2,
+                CouponCode = "ZACCA25",
+                DiscountAmount = 25
+            });
+        }
+
     }
 }
