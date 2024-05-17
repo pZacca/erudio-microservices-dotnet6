@@ -45,7 +45,7 @@ namespace GeekShopping.IdentityServer.Services
                         IdentityRole identityRole = await _roleManager
                             .FindByNameAsync(role);
                         if(identityRole != null) {
-                            claims.AddRange(await _roleManager.GetClaimsAsync(identityRole)
+                            claims.AddRange(await _roleManager.GetClaimsAsync(identityRole));
                         }
                     }
                 }
