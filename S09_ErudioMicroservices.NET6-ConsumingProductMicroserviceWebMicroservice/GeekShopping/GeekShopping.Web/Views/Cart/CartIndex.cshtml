@@ -98,6 +98,13 @@
                                 Purchase Amount: @((Model.CartHeader.PurchaseAmount).ToString("c", new CultureInfo("pt-BR")))
                                 <br />
                             </span>
+                            @if(Model.CartHeader.DiscountAmount > 0)
+                            {
+                                <span class="text-success">
+                                    Discount Amount: @((Model.CartHeader.DiscountAmount).ToString("c", new CultureInfo("pt-BR")))
+                                    <br />
+                                </span>
+                            }
                         </div>
                     </div>
                 </div>
