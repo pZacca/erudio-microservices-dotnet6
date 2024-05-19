@@ -1,7 +1,6 @@
-using GeekShopping.OrderAPI.Repository;
-using GeekShopping.OrderAPI.MessageConsumer;
-using GeekShopping.OrderAPI.Model;
-using GeekShopping.OrderAPI.RabbitMQSender;
+using GeekShopping.Email.MessageConsumer;
+using GeekShopping.Email.Model.Context;
+using GeekShopping.Email.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -19,11 +18,9 @@ dBContextBuilder.UseMySql(
     connection,
     new MySqlServerVersion(new Version(8, 0, 29)));
 
-builder.Services.AddSingleton(new OrderRepository(dBContextBuilder.Options));
-
-builder.Services.AddHostedService<RabbitMQCheckoutConsumer>();
+builder.Services.AddSingleton(new EmailRepository(dBContextBuilder.Options));
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddHostedService<RabbitMQPaymentConsumer>();
-builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
 
 builder.Services.AddControllers();
 
@@ -50,7 +47,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.OrderAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.Email", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"Enter 'Bearer' [space] and your token!",
@@ -78,6 +75,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+// Add services to the container.
 
 var app = builder.Build();
 
@@ -85,7 +83,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.OrderAPI v1"));
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
