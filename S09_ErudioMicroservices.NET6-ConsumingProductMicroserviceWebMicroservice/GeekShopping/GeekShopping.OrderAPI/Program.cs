@@ -9,15 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connection = builder.Configuration["MySqlConnection:MySqlConnectionString"];
 
-builder.Services.AddDbContext<MySQLContext>(options => options.
-    UseMySql(connection,
-        new MySqlServerVersion(
-            new Version(8, 0, 29))));
+builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(
+    connection,
+    new MySqlServerVersion(new Version(8, 0, 29))));
 
 var dBContextBuilder = new DbContextOptionsBuilder<MySQLContext>();
-dBContextBuilder.UseMySql(connection,
-    new MySqlServerVersion(
-            new Version(8, 0, 29)));
+dBContextBuilder.UseMySql(
+    connection,
+    new MySqlServerVersion(new Version(8, 0, 29)));
 
 builder.Services.AddSingleton(new OrderRepository(dBContextBuilder.Options));
 
@@ -48,7 +47,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.OrderAPI", Version = "v1" });
-    //c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.ProductAPI", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -84,10 +82,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.OrderAPI v1"));
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseAuthentication();
 
